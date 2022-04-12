@@ -2,7 +2,6 @@ import './App.css';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import HomePage from './components/HomePage';
-import SubjectGeneratorPage from './components/SubjectGeneratorPage';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
@@ -19,9 +18,9 @@ function App() {
               <HomePage/>
             </PrivateRoute>
             } />
-          <Route path='/subject_generator' element={
+          <Route path='/map' element={
             <PrivateRoute>
-              <SubjectGeneratorPage/>
+              <HomePage/>
             </PrivateRoute>
             } />      
         </Routes>
