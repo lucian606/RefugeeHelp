@@ -5,6 +5,7 @@ import HomePage from './components/HomePage';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import MapPage from './components/MapPage';
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
             } />
           <Route path='/map' element={
             <PrivateRoute>
-              <HomePage/>
+              <MapPage/>
             </PrivateRoute>
             } />      
         </Routes>
