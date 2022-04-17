@@ -1,17 +1,19 @@
 import { useAuth } from "../contexts/AuthContext";
 import Navbar from "./Navbar";
-import { useJsApiLoader, GoogleMap } from '@react-google-maps/api'
+import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api'
 import { Box } from '@chakra-ui/react';
+import { useState } from 'react';
 
 export default function MapPage() {
 
 
-    const center = { lat: 48.85837, lng: 2.294481 };
+    const center = { lat: 50.45, lng: 30.52 };
     const { loading, currentUser } = useAuth();
     const { isLoaded } = useJsApiLoader({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries: ['places']
     });
+    const [map, setMap] = useState(null);
 
     console.log(process.env.REACT_APP_GOOGLE_MAPS_API_KEY)
 
@@ -41,7 +43,10 @@ export default function MapPage() {
                             mapTypeControl: false,
                             fullscreenControl: false,
                         }}
+                        onLoad={(map) => setMap(map)}
                     >
+                        
+                        <Marker position={center} icon='' label='Ajutor sa ma fut' onClick={() => console.log('Ana')} />
                     </GoogleMap>
                 </Box>               
             </div>

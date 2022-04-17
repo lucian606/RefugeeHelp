@@ -1,6 +1,9 @@
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useRef, useState } from "react";
+const axios = require("axios");
+
+const backendUrl = "http://localhost:5000/users";
 
 export default function RegisterPage() {
     
@@ -25,6 +28,18 @@ export default function RegisterPage() {
 
         try {
             await signup(emailRef.current.value, passwordRef.current.value);
+            axios({
+                method: "post",
+                url: backendUrl,
+                data: { email: emailRef.current.value },
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                console.log(res);
+            }, err => {
+                console.log("Error")
+            });
             setSuccess('Successfully registered');
             setError('');
         } catch (error) {
