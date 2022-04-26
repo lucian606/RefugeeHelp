@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
 
-export default function Navbar() {
+export default function Navbar(props) {
 
     const [navbarShown, setNavbarShown] = useState(true);
 
@@ -12,6 +12,13 @@ export default function Navbar() {
     const handleLogout = () => {
         window.sessionStorage.removeItem("user");
         window.localStorage.removeItem("user");
+    }
+
+    const handleForum = async () => {
+        if (props.handleNavigate) {
+            return props.handleNavigate(null);
+        }
+        return () => {}
     }
 
     return (
@@ -35,7 +42,7 @@ export default function Navbar() {
                     <NavLink to="/map" className="block mt-5 lg:inline-block text-xl text-blue-200 hover:text-white ml-4">
                         Map
                     </NavLink>
-                    <NavLink to="/" className="block mt-5 lg:inline-block text-xl text-blue-200 hover:text-white ml-4">
+                    <NavLink to="/forum" onClick={handleForum} className="block mt-5 lg:inline-block text-xl text-blue-200 hover:text-white ml-4">
                         Forum
                     </NavLink>
                     <NavLink to="" className="block ml-4 mt-5 mb-5 lg:inline-block text-xl text-blue-200 hover:text-white">

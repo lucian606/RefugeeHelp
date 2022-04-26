@@ -3,6 +3,7 @@ import Navbar from "./Navbar";
 import { useJsApiLoader, GoogleMap, Marker } from '@react-google-maps/api'
 import { Box } from '@chakra-ui/react';
 import { useState } from 'react';
+import LoadingCircle from "./LoadingCircle";
 
 export default function MapPage() {
 
@@ -21,9 +22,7 @@ export default function MapPage() {
         return (
             <div>
             <Navbar></Navbar>
-                <div>
-                    LOADING...
-                </div>
+                <LoadingCircle />
             </div>
         );
     }
