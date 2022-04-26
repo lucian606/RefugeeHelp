@@ -38,7 +38,8 @@ export default function RegisterPage() {
             }).then(res => {
                 console.log(res);
             }, err => {
-                console.log("Error")
+                console.log(err);
+                throw err;
             });
             setSuccess('Successfully registered');
             setError('');

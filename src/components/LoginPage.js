@@ -1,6 +1,9 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useRef, useState } from "react";
+const axios = require("axios");
+
+const backendUrl = "http://localhost:5000/users/";
 
 export default function LoginPage() {
 
@@ -16,6 +19,21 @@ export default function LoginPage() {
         try {
             setError('');
             let user = await login(emailRef.current.value, passwordRef.current.value);
+            axios({
+                method: "get",
+                url: backendUrl + emailRef.current.value,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }).then(res => {
+                console.log(res);
+                let role = res.data;
+                user.role = role;
+                console.log(user);
+            }, err => {
+                console.log(err)
+                throw err;
+            });
             window.sessionStorage.setItem("user", user);
             window.localStorage.removeItem("user");
             if (stayLoggedInRef.current.checked) {
