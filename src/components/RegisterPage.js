@@ -2,8 +2,7 @@ import { NavLink } from "react-router-dom";
 import { useAuth } from "../contexts/AuthContext";
 import { useRef, useState } from "react";
 const axios = require("axios");
-
-const backendUrl = "http://localhost:5000/users";
+const usersBackendUrl = require("../utils").usersBackendUrl;
 
 export default function RegisterPage() {
     
@@ -30,7 +29,7 @@ export default function RegisterPage() {
             await signup(emailRef.current.value, passwordRef.current.value);
             axios({
                 method: "post",
-                url: backendUrl,
+                url: usersBackendUrl,
                 data: { email: emailRef.current.value },
                 headers: {
                     "Content-Type": "application/json"
