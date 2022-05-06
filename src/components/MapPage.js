@@ -20,6 +20,7 @@ export default function MapPage() {
         libraries: ['places']
     });
 
+    const [errorMsg, setErrorMsg] = useState('');
     const [map, setMap] = useState(null);
     const [points, setPoints] = useState([]);
     const [gotPoints, setGotPoints] = useState(false);
@@ -93,7 +94,7 @@ export default function MapPage() {
         return (
             <div>
                 <Navbar/>
-                <CreatePoint handlePointSubmit={handlePointSubmit} lng={newLng} lat={newLat} email={currentUser.email}/>
+                <CreatePoint errorMsg={errorMsg} setErrorMsg={setErrorMsg} handlePointSubmit={handlePointSubmit} lng={newLng} lat={newLat} email={currentUser.email}/>
             </div>
         );
     }
