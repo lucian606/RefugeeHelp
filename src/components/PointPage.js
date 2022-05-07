@@ -2,33 +2,54 @@ import Navbar from "./Navbar";
 import { useAuth } from "../contexts/AuthContext";
 const axios = require('axios');
 const usersBackendUrl = require('../utils').usersBackendUrl;
-
+const pointsBackendUrl = require('../utils').pointsBackendUrl;
 
 export default function PointPage(props) {
 
     const { currentUser } = useAuth();
 
+    console.log(props.currentPoint);
+
     async function deletePoint() {
-        try {
-            axios({
+        if (props.currentPoint.visibility === 'Public') {
+            console.log("Public point");
+            console.log(props.currentPoint._id);
+            await axios({
                 method: "delete",
-                url: usersBackendUrl + '/points',
-                data: {
-                    email: currentUser.email,
-                    id: props.currentPoint.id
-                },
+                url: pointsBackendUrl + '/' + props.currentPoint._id,
                 headers: {
                     "Content-Type": "application/json"
                 }
             }).then(res => {
                 console.log(res);
+                console.log("Point deleted");
+                props.handlePointSubmit();
             }, error => {
-                console.log(error);
-                throw error;
+                console.log(error.response);
+                console.log("Error deleting point");
             });
-            props.handlePointSubmit();
-        } catch (error) {
-            console.log(error);
+        } else {
+            try {
+                axios({
+                    method: "delete",
+                    url: usersBackendUrl + '/points',
+                    data: {
+                        email: currentUser.email,
+                        id: props.currentPoint.id
+                    },
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                }).then(res => {
+                    console.log(res);
+                }, error => {
+                    console.log(error);
+                    throw error;
+                });
+                props.handlePointSubmit();
+            } catch (error) {
+                console.log(error);
+            }
         }
     }
 
@@ -56,6 +77,10 @@ export default function PointPage(props) {
                     <p className="text-2xl pt-2 pb-2 break-all">
                         <span className="font-bold">Placed by: </span>
                         {props.currentPoint.authorEmail}
+                    </p>
+                    <p className="text-2xl pt-2 pb-2 break-all">
+                        <span className="font-bold">Point visibility: </span>
+                        {props.currentPoint.visibility}
                     </p>
                     {
                         currentUser.email === props.currentPoint.authorEmail &&

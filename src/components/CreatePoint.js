@@ -3,6 +3,7 @@ import { useRef } from "react";
 import useState from "react";
 const axios = require("axios");
 const usersBackendUrl = require("../utils").usersBackendUrl;
+const pointsBackendUrl = require("../utils").pointsBackendUrl;
 
 export default function CreatePoint(props) {
 
@@ -11,14 +12,20 @@ export default function CreatePoint(props) {
     const latRef = useRef();
     const lngRef = useRef();
     const authorEmailRef = useRef();
+    const publicPointRef = useRef();
     const errorMsg = props.errorMsg;
     const setErrorMsg = props.setErrorMsg;
 
     async function handleSubmit() {
         try {
+            let url = usersBackendUrl + '/points';
+            if (publicPointRef.current.checked) {
+                console.log("Public point");
+                url = pointsBackendUrl;
+            }
             axios({
                 method: "post",
-                url: usersBackendUrl + '/points',
+                url: url,
                 data: {
                     title: titleRef.current.value,
                     description: descriptionRef.current.value,
@@ -32,9 +39,10 @@ export default function CreatePoint(props) {
             }).then(res => {
                 console.log(res);
                 props.handlePointSubmit();
+                setErrorMsg('');
             }, error => {
                 console.log(error.response);
-                if (error.response.status === 400) {
+                if (error.response.status === 400 && error.response.data) {
                     console.log("400");
                     console.log(errorMsg);
                     console.log(error.response.data.Message);
@@ -82,7 +90,7 @@ export default function CreatePoint(props) {
                 </div>
                 <div className="mb-3 flex justify-start items-center">
                         <label htmlFor="" className="text-xl font-medium text-gray-900">Make point public?</label>
-                        <input type="checkbox" className="h-5 w-5 ml-2 text-blue-300 rounded"/>
+                        <input ref={publicPointRef} type="checkbox" className="h-5 w-5 ml-2 text-blue-300 rounded"/>
                 </div>
                 <div className="mb-3">
                     <label htmlFor="post-details" className="block mb-2 text-xl font-medium text-gray-900 dark:text-gray-300">Description</label>

@@ -20,9 +20,13 @@ export default function MapPage() {
         libraries: ['places']
     });
 
+    const image =
+    "http://maps.google.com/mapfiles/ms/icons/blue-dot.png";
+
     const [errorMsg, setErrorMsg] = useState('');
     const [map, setMap] = useState(null);
     const [points, setPoints] = useState([]);
+    const [publicPoints, setPublicPoints] = useState([]);
     const [gotPoints, setGotPoints] = useState(false);
     const [createPointModal, setCreatePointModal] = useState(false);
     const [newLat, setNewLat] = useState(0);
@@ -31,10 +35,18 @@ export default function MapPage() {
 
     async function getUserPoints() {
         const loadedUserPoints = [];
+        const loadedPublicPoints = [];
         try {
             let userPoints = await axios({
                 method: "get",
                 url: usersBackendUrl + '/points/' + currentUser.email,
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            });
+            let publicPoints = await axios({
+                method: "get",
+                url: pointsBackendUrl,
                 headers: {
                     "Content-Type": "application/json"
                 }
@@ -44,11 +56,21 @@ export default function MapPage() {
             for (let i = 0; i < userPoints.data.length; i++) {
                 console.log("HTTP POINT");
                 const point = userPoints.data[i];
-                console.log(point);
                 loadedUserPoints.push(point);
             }
-            console.log(loadedUserPoints);
+            console.log("PUBLIC POINTS FROM HTTP");
+            console.log(publicPoints.data.length);
+            console.log(publicPoints.data);
+            for (let i = 0; i < publicPoints.data.length; i++) {
+                console.log("HTTP PUBLIC POINT");
+                const point = publicPoints.data[i];
+                console.log(point);
+                loadedPublicPoints.push(point);
+            }
+            console.log("LOADED PUBLIC POINTS");
+            console.log(loadedPublicPoints);
             setPoints(loadedUserPoints);
+            setPublicPoints(loadedPublicPoints);
         } catch (error) {
             console.log(error);
         }
@@ -58,6 +80,7 @@ export default function MapPage() {
         getUserPoints().then(() => {
             console.log("Points got");
             console.log(points);
+            console.log(publicPoints);
             setGotPoints(true);
         }); 
     }
@@ -124,9 +147,15 @@ export default function MapPage() {
                         }}>
                             {
                                 points.map((point, index) => {
+                                    point.visibility = "Private";
+                                    return <Marker position={point} icon={image} onClick={() => setCurrentPoint(point)}/> 
+                                })
+                            }
+                            {
+                                publicPoints.map((point, index) => {
                                     console.log(point);
-                                    console.log("Displaying point at index: " + index);
-                                    return <Marker position={point} onClick={() => setCurrentPoint(point)}/> 
+                                    point.visibility = "Public";
+                                    return <Marker position={point} onClick={() => setCurrentPoint(point)}/>
                                 })
                             }
                     </GoogleMap>
