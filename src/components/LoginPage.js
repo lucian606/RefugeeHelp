@@ -53,7 +53,8 @@ export default function LoginPage() {
     async function signInWithGoogle() {
         try {
             let user = await loginWithGoogle();
-            // axios({
+            console.log(user);
+            // await axios({
             //     method: "post",
             //     url: usersBackendUrl,
             //     data: { email: user.email },
