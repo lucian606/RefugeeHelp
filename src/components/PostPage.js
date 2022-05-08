@@ -6,6 +6,8 @@ import { arrayRemove, arrayUnion, updateDoc } from "firebase/firestore";
 import { collection, addDoc, query, getDocs, doc, getDoc } from "firebase/firestore";
 import Comment from "./Comment";
 import LoadingCircle from "./LoadingCircle";
+const emailsBackendUrl = require("../utils").emailsBackendUrl;
+const axios = require("axios");
 
 export default function PostPage(props) {
 
@@ -23,10 +25,10 @@ export default function PostPage(props) {
                 throw new Error('Can\'t submit empty comment');
             }
             const postRef = doc(firestoreDb, "posts", currentPost.id);
-
+            const text = commentRef.current.value;
             const newComment = {
                 authorEmail: currentUser.email,
-                text: commentRef.current.value,
+                text: text,
                 time: new Date().toLocaleString()
             }
 
@@ -36,6 +38,18 @@ export default function PostPage(props) {
             updatedPost.id = currentPost.id;
             setCurrentPost(updatedPost);
             setLoading(false);
+            axios({
+                method: "post",
+                url: emailsBackendUrl,
+                data: { 
+                    email: currentPost.authorEmail,
+                    subject: "Your post : " + currentPost.title + " has got a new comment from " + currentUser.email, 
+                    message: "Your post has got the following comment: " + text
+                },
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
         } catch (error) {
             console.log(error);
             setLoading(false);

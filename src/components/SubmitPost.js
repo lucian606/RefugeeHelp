@@ -6,6 +6,8 @@ import { firestoreDb } from "../firebase";
 import { arrayUnion, updateDoc } from "firebase/firestore";
 import { collection, addDoc, query, getDocs, doc, getDoc } from "firebase/firestore";
 import LoadingCircle from "./LoadingCircle";
+const emailsBackendUrl = require("../utils").emailsBackendUrl;
+const axios = require("axios");
 
 export default function SubmitPost() {
 
@@ -29,9 +31,10 @@ export default function SubmitPost() {
                 setError('Please fill in all fields');
                 throw new Error('Please fill in all fields');
             }
+            const title = titleRef.current.value;
             const postsRef = collection(firestoreDb, "posts");
             const newForumPost = {
-                title: titleRef.current.value,
+                title: title,
                 description: descriptionRef.current.value,
                 authorEmail: currentUser.email,
                 comments: [],
@@ -44,6 +47,18 @@ export default function SubmitPost() {
             setTimeout(() => {
                 setSuccess('');
             }, 1000);
+            axios({
+                method: "post",
+                url: emailsBackendUrl,
+                data: { 
+                    email: currentUser.email,
+                    subject: "Your post : " + title + " has been created", 
+                    message: "Your post has been created and is now on the forum."
+                },
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
         } catch (error) {
             setLoading(false);
             console.log("ERROR");
