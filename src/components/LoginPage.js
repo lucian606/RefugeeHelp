@@ -4,7 +4,6 @@ import { useRef, useState } from "react";
 const axios = require("axios");
 const usersBackendUrl = require("../utils").usersBackendUrl;
 
-
 export default function LoginPage() {
 
     const emailRef = useRef();
@@ -53,15 +52,6 @@ export default function LoginPage() {
     async function signInWithGoogle() {
         try {
             let user = await loginWithGoogle();
-            console.log(user);
-            // await axios({
-            //     method: "post",
-            //     url: usersBackendUrl,
-            //     data: { email: user.email },
-            //     headers: {
-            //         "Content-Type": "application/json"
-            //     }
-            // });
             window.sessionStorage.setItem("user", user);
             navigate('/');
         } catch (error) {
